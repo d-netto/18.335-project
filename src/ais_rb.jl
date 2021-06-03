@@ -7,8 +7,9 @@ Assumes a functional form f : Rᵈ -> R.
 Parameters:
 - d: input dimension
 - n_stages: number of iterations performed by the integrator
-- f: function to be integrated
+- f: pdf whose expectation should be integrated
 - C: update step
+- μ_glob: mean of f
 """
 
 function ais_rb(d::Int, n_stages::Int, f::Function, C::AbstractFloat, μ_glob::AbstractVector)

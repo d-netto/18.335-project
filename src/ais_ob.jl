@@ -7,7 +7,8 @@ Assumes a functional form f : Rᵈ -> R.
 Parameters:
 - d: input dimension
 - n_stages: number of iterations performed by the integrator
-- f: function to be integrated
+- f: pdf whose expectation should be integrated
+- μ_glob: mean of f
 - n_samples: list of number of samples used for each iteration
 """
 
