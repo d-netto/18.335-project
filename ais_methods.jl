@@ -24,25 +24,19 @@ function ais_rb(
     C::AbstractFloat,
     μ_glob::AbstractVector,
 )
-    g_lam = (μ, Σ) -> MultivariateNormal(μ, Σ)
-
+    g_λ = (μ, Σ) -> MultivariateNormal(μ, Σ)
     μ = rand(d)
     Σ = I + zeros(d, d)
-
     S = inv(Σ)
     m = S * μ
-
-    X_k = zeros(d)
-    est = zeros(d)
-
+    X_k, est = (zeros(d), zeros(d))
     error_list = Float64[]
-
     @inbounds for k in 1:n_stages
         mul!(μ, Σ, m)
-        X_k .= rand(g_lam(μ, Σ))
-        est .= (est .* (k - 1) .+ f(X_k) .* X_k / pdf(g_lam(μ, Σ), X_k)) / k
+        X_k .= rand(g_λ(μ, Σ))
+        est .= (est .* (k - 1) .+ f(X_k) .* X_k / pdf(g_λ(μ, Σ), X_k)) / k
         m .-=
-            C .* (norm(X_k)^2) .* (f(X_k)^2) ./ (2 * pdf(g_lam(μ, Σ), X_k) * sqrt(k)) *
+            C .* (norm(X_k)^2) .* (f(X_k)^2) ./ (2 * pdf(g_λ(μ, Σ), X_k) * sqrt(k)) *
             (μ - X_k)
         push!(error_list, norm(est .- μ_glob) / norm(μ_glob))
     end
@@ -69,17 +63,14 @@ function ais_ob(
     μ_glob::AbstractVector,
     n_samples::AbstractVector,
 )
-    g_lam = (λ, Σ) -> MultivariateNormal(λ, Σ)
-
+    g_λ = (λ, Σ) -> MultivariateNormal(λ, Σ)
     λ = rand(d)
     Σ = I + zeros(d, d)
-
     WΦ = zeros(n_stages, d + 1)
     error_list = Float64[]
-
     @inbounds for k in 1:n_stages
-        w_k = θ -> f(θ) / pdf(g_lam(λ, Σ), θ)
-        samples_k_list = [rand(g_lam(λ, Σ)) for n = 1:n_samples[k]]
+        w_k = θ -> f(θ) / pdf(g_λ(λ, Σ), θ)
+        samples_k_list = [rand(g_λ(λ, Σ)) for n = 1:n_samples[k]]
         W_k = h -> sum((h.(samples_k_list)) .* (w_k.(samples_k_list)))
         WΦ[k, 1] = W_k(x -> one(eltype(x)))
         WΦ[k, 2:end] .= [W_k(x -> x[k-1]) for k = 2:d+1]
