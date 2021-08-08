@@ -29,8 +29,8 @@ function ais_rb(
     μ = rand(d)
     Σ = I + zeros(d, d)
 
-    m = inv(Σ) * μ
     S = inv(Σ)
+    m = S * μ
 
     X_k = zeros(d)
     est = zeros(d)
@@ -38,7 +38,7 @@ function ais_rb(
     error_list = Float64[]
 
     @inbounds for k in 1:n_stages
-        mul!(μ, inv(S), m)
+        mul!(μ, Σ, m)
         X_k .= rand(g_lam(μ, Σ))
         est .= (est .* (k - 1) .+ f(X_k) .* X_k / pdf(g_lam(μ, Σ), X_k)) / k
         m .-=
