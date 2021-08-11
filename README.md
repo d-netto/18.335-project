@@ -4,4 +4,4 @@ Final project for 18.335 (Numerical Methods) on Monte-Carlo Integrators with Ada
 
 Results can be reproduced by activating/instantiating the environment defined by `Manifest.toml` and `Project.toml` and running `ais_methods.jl`.
 
-All benchmarks in `writeup.pdf` were run on a 1.8 GHz Intel Core i5 machine with 8 GB 1600 MHz memory running macOS High Sierra 10.13.6.
+All benchmarks in `ais_writeup.pdf` were run on a 1.8 GHz Intel Core i5 machine with 8 GB 1600 MHz memory running macOS High Sierra 10.13.6.
